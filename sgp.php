@@ -8,6 +8,11 @@ if (PHP_SAPI !== 'cli') { die("Not running from command line"); };
 if ($argc < 2) {
 	die("Usage $argv[0] [domainname] [length (optional)]\n");
 }
+$domain = $argv[1]; # Strip input url to first level + tld
+if (!preg_match("!/!", $argv[1])) {	$domain = "//".$domain; }
+$domain = explode('.',parse_url($domain)['host']);
+$domain = implode('.',array_slice($domain,-2,2));
+
 $len = (isset($argv[2]) ? $argv[2] : 15); # Set default length
 if (!isset($argv[3])) { $dig = "md5"; } # Set default digest
 elseif (in_array($argv[3], hash_algos())) { $dig = $argv[3]; }
@@ -16,7 +21,7 @@ else { die("Unknown digest: $argv[3]\n"); }
 print("Password: \033[30;40m"); # Not quite hiding black on black...
 $master = stream_get_line(STDIN, 80, PHP_EOL); #Works on Windows too?
 print("\033[0m"); # Restore
-$hash = $master.":".$argv[1];
+$hash = $master.":".$domain;
 
 function valid($h,$i) {
 	if ( $i>10 and ctype_lower($h{0}) and # ^[a-z]  Try out three different 
