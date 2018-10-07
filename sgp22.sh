@@ -21,7 +21,7 @@ validHash() {
 until validHash
 do
 	let "i++"
-	hash=$(echo -n "$hash" | openssl ${digest} -binary | openssl base64)
+	hash=$(echo -n "$hash" | openssl ${digest} -binary | openssl base64 -A)
 	hash=${hash//+/9}; hash=${hash//\//8}; hash=${hash//=/A} # tr +/= 98A
 done
 echo ${hash:0:length}
