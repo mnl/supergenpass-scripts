@@ -17,7 +17,7 @@ while len(argv)<4:
 # Set defaults
 url = argv[1]
 length = 15 if not argv[2] else int(argv[2])
-dig = sha256 if argv[3] is "sha512" else md5
+dig = sha512 if argv[3] == "sha512" else md5
 
 if not url or not 1 + url.find('.'):
     usage="Usage: {0} [domainname] [length (optional)] [digest (optional)]"
