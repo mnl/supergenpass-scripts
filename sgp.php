@@ -9,7 +9,8 @@ if ($argc < 2) {
 	die("Usage $argv[0] [domainname] [length (optional)]\n");
 }
 $domain = $argv[1]; # Strip input url to first level + tld
-if (!preg_match("!/!", $argv[1])) {	$domain = "//".$domain; }
+if (strpos($argv[1],'/') === FALSE ) { $domain = "//".$domain; }
+# parse_url fails to get 'host' without at least one / for scheme
 $domain = explode('.',parse_url($domain)['host']);
 $domain = implode('.',array_slice($domain,-2,2));
 
@@ -38,8 +39,7 @@ do {
 	$i++;
 } while(!valid($hash,$i));
 
-
 # Done! Cut to length and print
 $hash = substr($hash, 0, $len);
-print($hash."\n")
+print($hash.PHP_EOL)
 ?>
