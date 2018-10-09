@@ -19,10 +19,13 @@ Strips url to domain.tld. Effort made to not use regexp.
 ## Perl `sgp02.pl`
 Uses a big fat regexp since it's Perl
 
-## Lua 5.3
+## Node JavaScript `sgp-node.js`
+JavaScript or ECMAScript 6 maybe? Reading stdin is far from a oneliner in Node. Doesn't hide input but overwrites it. 
+
+## Lua 5.3 `sgp.lua`
 Lua version. Depends on `hashings` library and lua binary operators
 
-## PHP 5?
+## PHP 5? `sgp.php`
 Tried to use as many built in functions as possible :)
 Doesn't quite hide password. Not sure if that part is Windows compatible...
 
