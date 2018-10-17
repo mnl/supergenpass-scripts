@@ -2,7 +2,6 @@
 // Node JS version of SuperGenPass
 // ECMAScript 6? Requires crypto and readline
 // Version 1.0 by mnl@vandal.nu in 2018
-
 const crypto = require('crypto');
 const readline = require('readline');
 // Set arguments and defaults
@@ -11,15 +10,15 @@ const [node, script, domain, len = 15, dig = 'md5'] = process.argv
 if (isNaN(len) || domain == null || !crypto.getHashes().includes(dig)) {
 	console.error("Usage: "+script+
 		" [domainname] [length (optional)] [digest (optional)]");
-	process.exit(1);
+	process.exit(2);
 }
 // Check for upper case, lower case start digits
 function valid(h) {
 	if (h != h.toLowerCase() &&	/^[a-z].*\d/.test(h)) { return true; }
 	return false;
 }
-// Getting input in surpisingly complicated with Node
-rl = readline.createInterface({	input: process.stdin,	output: process.stdout });
+// Getting input is surpisingly complicated with Node
+rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 rl.question('Password: ', (pass) => {
 	// Write over the user input instead of turning off echo
 	readline.moveCursor(process.stdin,10,-1);
