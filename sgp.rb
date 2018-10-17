@@ -25,18 +25,17 @@ master = STDIN.noecho(&:gets).chomp
 hash = master+":"+domain
 
 def valid(h)
-	#check if valid
-	return false unless $i >= 10
+	# Has to start with lowercase and contain uppercase and numbers
 	if ( h =~ /^[a-z]/ and h =~ /[A-Z]/ and h =~ /[0-9]/ )
 		return true
 	end
 end
 
-$i = 0
-until valid(hash) do
+for count in 0..10
 	hash = $dig.base64digest(hash)
 	hash.tr!('+/=','98A')
-	$i += 1
+	next if count < 10 # Hash ten times and then until valid
+	redo unless valid(hash)
 end
 
 #Done crop and print out
