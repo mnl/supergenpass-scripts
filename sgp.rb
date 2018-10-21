@@ -31,10 +31,10 @@ def valid(h)
 	end
 end
 
-for count in 0..10
+10.times do |count|
 	hash = $dig.base64digest(hash)
 	hash.tr!('+/=','98A')
-	next if count < 10 # Hash ten times and then until valid
+	next if count < 9 # Hash ten times and then until valid
 	redo unless valid(hash)
 end
 
