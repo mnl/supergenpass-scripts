@@ -1,6 +1,12 @@
 #!/bin/bash
 
-readonly length=15
+# Graphical SuperGenPass implementation. mnl@vandal.nu 2017
+# Put an url in clipboard memory, launch the script and enter password.
+# The url gets replaced with a sgp hash that can be pasted once.
+# Uses Zenity for input and OpenSSL for hashing
+
+# Set defaults
+readonly length=15  
 readonly digest=md5
 
 validHash() {
@@ -12,18 +18,18 @@ validHash() {
 	[[ "$hash" =~ ([0-9]) ]]
 }
 
-validDomain() {
+validDomain() {  # Checks clipboard (primary then clip) for a domain name
 	declare -l url
 	if [[ $domain == "" ]]; then
-		url="$(xclip -o)" #First run: get XA_PRIMARY
+		url="$(xclip -o)" # First run: get XA_PRIMARY
 	else
-		url="$(xclip -selection clipboard -o)" #Second run: Try with XA_CLIPBOARD
+		url="$(xclip -selection clipboard -o)" # Second run: Try with XA_CLIPBOARD
 	fi
-	url="${url#*//}" # strip protocol
-	domain="${url%%/*}" # strip path, query, etc
+	url="${url#*//}" # Strip protocol
+	domain="${url%%/*}" # Strip path, query, etc
 	regex="^.*\\..*$" # Contains a dot
 	if [[ "${domain}" =~ $regex ]]; then 
-		regex="^.*\\..*\\..*$" # Contains two dots
+		regex="^.*\\..*\\..*$" # Contains two dots ( broken for co.uk domains etc. )
 		if [[ "${domain}" =~ $regex ]]; then
 			domain="${domain#*.}" # Strip (first) subdomain
 		fi
@@ -35,7 +41,7 @@ validDomain() {
 if validDomain || validDomain; then
 	master=$(zenity --entry --hide-text --ok-label="Copy" --text="Password for ${domain}")||\
 		(echo "Input aborted" >&2; exit 1)
-	trap "unset master hash domain" EXIT 15 2 5 6
+	trap "unset master hash domain" EXIT 15 2 5 6 # Clear password vars from memory
 else 
 	echo "Invalid url" >&2; exit 1
 fi
@@ -46,7 +52,7 @@ let i=0
 until validHash
 do
 	let "i++"
-	hash=$(echo -n "$hash" | openssl ${digest} -binary | openssl base64)
+	hash=$(echo -n "$hash" | openssl ${digest} -binary | openssl base64 -A)
 	hash=${hash//+/9}; hash=${hash//\//8}; hash=${hash//=/A} # tr +/= 98A
 done
-echo ${hash:0:length}|xclip -i -l 1
+echo ${hash:0:length}|xclip -i -l 1 # Paste once
