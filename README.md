@@ -10,17 +10,17 @@ Most can use MD5 och SHA512 digests. Accepts arguments domain (or url) length an
 ## Ruby `sgp.rb`
 I hope all ruby installs come with the digest gem
 
-## Bash4 `sgp22.sh`
+## Bash4 `sgp.sh`
 Uses openssl for hashing. Doesn't use tr and sed like other command line sgp scripts do.
 
-## Python `sgp10.py`
+## Python `sgp.py`
 Strips url to domain.tld. Effort made to not use regexp.
 
-## Perl `sgp02.pl`
+## Perl `sgp.pl`
 Uses a big fat regexp since it's Perl
 
 ## Node JavaScript `sgp-node.js`
-JavaScript or ECMAScript 6 maybe? Reading stdin is far from a oneliner in Node. Doesn't hide input but overwrites it. 
+JavaScript or ECMAScript 6. Reading stdin is far from a oneliner in Node. Doesn't hide input but overwrites it. 
 
 ## Lua 5.3 `sgp.lua`
 Lua version. Depends on `hashings` library and lua binary operators
@@ -28,6 +28,12 @@ Lua version. Depends on `hashings` library and lua binary operators
 ## PHP 5? `sgp.php`
 Tried to use as many built in functions as possible :)
 Doesn't quite hide password. Not sure if that part is Windows compatible...
+
+## R `sgp.R`
+Use with Rscript hashbang or interactively in REPL/IDE. Make sure to `package.install("openssl")` first
+
+## PowerShell `sgp.ps1`
+Windows scripting is weird. This one both checks the url and handles the clipboard.
 
 ## Zenity + bash `sgpclip`
 Takes url from clipboard, strips out first level domain, hashes with master password and puts new password hash in clipboard.
