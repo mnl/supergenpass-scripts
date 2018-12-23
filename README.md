@@ -7,15 +7,15 @@ I aim for them to be:
 
 Most can use MD5 och SHA512 digests. Accepts arguments domain (or url) length and digest. Outputs to stdout.
 
-## Node JavaScript `sgp-node.js`
-JavaScript or ECMAScript 6. Reading stdin is far from a oneliner in Node. Doesn't hide input but overwrites it. 
-
-## R `sgp.R`
-Use with Rscript hashbang or interactively in REPL/IDE. Make sure to `package.install("openssl")` first
-
 ## Elixir `sgp.exs`
 Run with iex or elixir. Seems to do the job but no idea how useful or correct it is.
 Uses standard libraries. Hidden input, domain validation or other digests are not implemented.
+
+## Julia `sgp.jl`
+Tested with Julia 1.0.2. Base64 and SHA are in stdlib, `Pkg.add("MD5")` for MD5. Hides input with getpass, also in stdlib. Not very fast at all but I don't think that's Julia's fault.
+
+## Node JavaScript `sgp-node.js`
+JavaScript or ECMAScript 6. Reading stdin is far from a oneliner in Node. Doesn't hide input but overwrites it. 
 
 ## Lua 5.3 `sgp.lua`
 Lua version. Depends on `hashings` library and lua binary operators
@@ -32,6 +32,9 @@ Windows scripting is weird. This one both checks the url and handles the clipboa
 
 ## Python 3 `sgp.py`
 Strips url to domain.tld. Effort made to not use regexp.
+
+## R `sgp.R`
+Use with Rscript hashbang or interactively in REPL/IDE. Make sure to `package.install("openssl")` first
 
 ## Ruby `sgp.rb`
 I hope all ruby installs come with the digest gem
