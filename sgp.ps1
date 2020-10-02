@@ -1,63 +1,49 @@
-﻿<#
-    SuperGenPass implementation in PowerShell. 
-    Put an URL in clipboard and it will be replaced with a SGP hash
-    Falls back to command line input and behaves like the others
-    Version 0.2 made in 2018 by mnl@vandal.nu (and barely works.)
+#!/usr/bin/pwsh
+<#
+	Supergenpass implementation in PowerShell Core 6
+	Tested on Debian 9 and Windows 10 
+	Version 0.1. See sgp.ps1 for advanced cliboard version
+	Made by mnl@vandal.nu in 2019!
 #>
-
-$url = Get-Clipboard # Get domain from clipboard
-$domain = ForEach ($fragment In ($url -split "\/")) {
-    if ($fragment -imatch "\w{1,}\.\w{2,}$") { # Look for a domain name
-        ($fragment.Split('.')[-2]+'.'+$fragment.Split('.')[-1]).ToLower()
-    }
+# Set parameters PowerShell-style
+Param(
+	[String[]]$domain,
+	[int]$len,
+	[String[]]$dig
+		)
+# Get script name ($0) and strip path (win and unix paths)
+$0 = ($PSCommandPath -split "[\\/]")[-1]
+# Display error message to comply with tests. No mandatory param flag here.
+if (!$domain) { 
+	Write-Host -Message "Usage: $0 [domainname] length digest"
+	exit 1
 }
-if ($domain -and -not $args[0]) { 
-    $args = $domain,15,"md5" # The clipboard version uses default values.
-    $clip = "yes"
+if (!$len) { $len = 15 } # Set default length
+if ($dig -notin "sha512") {
+	# Set default digest
+	$digest = new-object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+} else {
+	$digest = new-object -TypeName System.Security.Cryptography.SHA512CryptoServiceProvider
 }
-else { # Fallback to command line
-$0 = ($PSCommandPath -split "\\")[-1]
-    if ($args.Count -lt 1) {
-        echo "Usage: $0 [domainname] [length (optional)] digest (optional)"
-        exit
-    }
-    $domain = $args[0]
-}
-if ($args[1] -notin 1..900) { $len = 15 } # Set default length
-else { $len = $args[1] }
-
-if ($args[2] -inotin "sha512" ) { # Set default digest 
-    $dig = new-object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider 
-} 
-else { 
-    $dig = new-object -TypeName System.Security.Cryptography.SHA512CryptoServiceProvider 
-}
-
 # Get input, AsSecureString hides input
 $master = Read-Host "Password" -AsSecureString
-# Make weird string normal again
-$master = (New-Object PSCredential "user",$master).GetNetworkCredential().Password
 
-$hash = "${master}:${domain}"
+# Make string normal again and concat with domain
+$hash = (New-Object PSCredential "user",$master).GetNetworkCredential().Password+":${domain}"
 
-function valid($hash) { 
-	$hash -cmatch '^[a-z].*[A-Z]' -and $hash -match '[0-9]' -and $i -ge 10 
+function valid([String]$hash) {
+	return $i -ge 10 -and $hash -cmatch '^[a-z].*[A-Z]' -and $hash -match '[0-9]'
 }
-$i=0
+# Prepare iterator and buffer
+$i = 0
+$b = New-Object -TypeName System.Text.UTF8Encoding 
 do {
-    $buffer = new-object -TypeName System.Text.UTF8Encoding # Do hashing via buffer
-    $hash = [Convert]::ToBase64String($dig.ComputeHash($buffer.GetBytes($hash)))
-    # Replace chars to conform to SGP alphabet
-    $hash = $hash -creplace "\+", "9" -creplace "\/", "8" -creplace "=", "A"
-    $i++
+	$hash = [Convert]::ToBase64String($digest.ComputeHash($b.GetBytes($hash)))
+	# Replace +/= accoring to SGP specs
+	$hash = $hash -creplace "\+", "9" -creplace "\/", "8" -creplace "=", "A"
+	$i++
 } until (valid $hash)
 
 # Cut to length if there are enough characters
-$hash = $hash.Substring(0,($hash.Length,$len |Measure -Minimum).Minimum)
-if ($clip) { 
-    Set-Clipboard -Value $hash 
-    Write-Host "Success: Password for $domain saved on clipboard."
-    Write-Warning -Message "Don't forget to clear it!"
-    Start-Sleep -m 1500 # Sleep so we can read 
-}
-else { echo $hash }
+$hash = $hash.Substring(0,($hash.Length,$len | Measure -Minimum).Minimum)
+Write-Host $hash

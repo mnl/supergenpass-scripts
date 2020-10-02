@@ -1,9 +1,7 @@
 #!/usr/bin/env tclsh
-
+#
 # SuperGenPass password generator in TCL.
 # Made by mnl@vandal.nu in 2019!
-
-package require md5
 
 if {$argc < 1} {
 	puts stderr "Usage $argv0 domainname \[length]"
@@ -24,7 +22,7 @@ proc valid {hash} {
 # Hash should begin with lowercase and contain numbers and uppercase
 	if {
 		[string match {[A-Z0-9]*} $hash] ||
-		[string is alpha $hash] || 
+		[string is alpha $hash] ||
 		! [string match {*[A-Z]*} $hash]
 	} {return 0}
 	return 1 ;# String is valid
@@ -38,4 +36,3 @@ proc rehash {hash times} {
 set hash [rehash "$pass:$domain" 10] ;# hash ten times
 set max [expr {$len > [string length $hash] ? [string length $hash] : $len}]
 puts [string range $hash 0 $max] ;# Cut to length and print
-

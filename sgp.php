@@ -6,7 +6,7 @@
 if (PHP_SAPI !== 'cli') { die("Not running from command line"); };
 
 if ($argc < 2) {
-	die("Usage $argv[0] [domainname] [length (optional)]\n");
+	fwrite(STDERR, "Usage $argv[0] [domainname] [length (optional)]\n"); die(1);
 }
 $domain = $argv[1]; # Strip input url to first level + tld
 if (strpos($argv[1],'/') === FALSE ) { $domain = "//".$domain; }

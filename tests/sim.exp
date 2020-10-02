@@ -1,0 +1,18 @@
+#!/usr/bin/env expect 
+log_user 0
+set timeout 1
+set SCRIPT [lindex $argv 0]
+set DOMAIN [lindex $argv 1]
+set PASS [lindex $argv 2]
+set LEN [lindex $argv 3]
+set CORRECTHASH [lindex $argv 4]
+spawn -noecho $SCRIPT $DOMAIN $LEN
+expect { 
+	timeout { exit 1 }
+	"Password:"
+	}
+send "$PASS\r"
+expect {
+	$CORRECTHASH { exit 0 }
+		eof { exit 1 }
+}

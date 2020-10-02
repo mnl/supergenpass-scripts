@@ -10,7 +10,7 @@ const [node, script, domain, len = 15, dig = 'md5'] = process.argv
 if (isNaN(len) || domain == null || !crypto.getHashes().includes(dig)) {
 	console.error("Usage: "+script+
 		" [domainname] [length (optional)] [digest (optional)]");
-	process.exit(2);
+	process.exit(1);
 };
 // Check for upper case, lower case start digits
 var valid = (h)  => {

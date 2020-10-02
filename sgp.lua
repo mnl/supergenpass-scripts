@@ -25,7 +25,7 @@ end
 
 if #arg < 1 
 	then
-	io.stderr:write(string.format("Usage %s [domainname] [length (optional)]", arg[0]))
+	print(string.format("Usage %s [domainname] [length (optional)]", arg[0]))
 	os.exit(1)
 end
 local domain, len, dig = arg[1], arg[2], arg[3]

@@ -7,13 +7,14 @@ library("openssl")
 
 # Get and handle arguments
 args <- commandArgs(trailingOnly=TRUE)
-if (length(args)==0) { stop("Usage ./sgp.R domainname [length] [digest]") }
+if (length(args)==0) { cat("Usage ./sgp.R domainname [length] [digest]\n") 
+	quit(status=1) }
 domain <- args[1]
-dig = switch ( args[2],	
+len <- ifelse(length(args) > 1,args[2],15) # Default hash length
+dig = switch ( args[3],	
 							sha256 = {sha256}, 
 							sha512 = {sha512}, 
 							{md5} ) # Default digest and for unknown entries
-len <- ifelse(length(args) > 2,args[3],15) # Default hash length
 
 # Get secure input from R
 if (interactive()) { pass <- askpass("Password: ") 

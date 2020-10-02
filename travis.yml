@@ -1,0 +1,18 @@
+sudo: required
+
+install:
+  - sudo apt-get update
+  - sudo apt-get install expect
+
+ matrix:
+  include:
+    - language: python
+      python: 
+      - 2.7
+      - 3.7
+     script:
+        - tests/sim.exp ./sgp.py $DOMAIN $PASS 25 $MD5HASH25
+
+    - language: php
+     script:
+        - tests/sim.exp ./sgp.php y$DOMAIN $PASS 25 $MD5HASH25 

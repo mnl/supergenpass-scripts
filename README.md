@@ -28,7 +28,7 @@ Doesn't quite hide password. Not sure if that part is Windows compatible...
 Uses a big fat regexp since it's Perl
 
 ## PowerShell `sgp.ps1`
-Windows scripting is weird. This one both checks the url and handles the clipboard.
+Simplified and more compatible cli version. The old version that does more stuff is now called sgpclip.ps1
 
 ## Python 3 `sgp.py`
 Strips url to domain.tld. Effort made to not use regexp.
@@ -42,6 +42,14 @@ I hope all ruby installs come with the digest gem
 ## Bash4 `sgp.sh`
 Uses openssl for hashing. Doesn't use tr and sed like other command line sgp scripts do.
 
+## TCL `sgp.tcl`
+Tested on TCL 8.6. Depends on tcllib's md5. As of now sha512 or other digests are not supported.
+
 ## Zenity + bash `sgpclip`
 Takes url from clipboard, strips out first level domain, hashes with master password and puts new password hash in clipboard.
 Zenity for dialog box, shell and openssl for everything else.
+
+## PowerShell clipboard `sgpclip.ps1`
+This one both checks the url and handles the clipboard. These features were moved out from the first powershell variant.
+
+Tests are written in `Expect` and `Bash4`. Not all behave quite as they should regarding error messages and such.
